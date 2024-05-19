@@ -120,9 +120,9 @@ const displayAlbums = async ()=> {
 	Array.from(document.querySelectorAll(".artist-card")).forEach(e=>{
 		e.addEventListener('click', async item=>{
 			songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
-			playMusic(songs[0], true);
-			play.src = "images/pause.svg";
-			document.querySelector(".seekbar-circle").style.left = 0 + "%";
+			playMusic(songs[0], false);
+			// play.src = "images/pause.svg";
+			// document.querySelector(".seekbar-circle").style.left = 0 + "%";
 		});
 	});
 	
@@ -165,6 +165,18 @@ async function main(){
 		if(currentSong.currentTime <= currentSong.duration ){
 			document.querySelector(".seekbar-circle").style.left = (currentSong.currentTime / currentSong.duration) * 100 + "%";
 		};
+
+		if(currentSong.currentTime === currentSong.duration){
+			let index = songs.indexOf(currentSong.src.split(`/${currFolder}/`)[1]);
+
+			if(index < songs.length-1){
+				playMusic(songs[index+1]);
+			}
+			else if(index == songs.length-1){
+				currentSong.pause();
+				play.src = "images/pause.svg";
+			}
+		}
 	});
 
 	//Add an eventListener to the seekar--------------------------
